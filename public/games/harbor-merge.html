@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Harbor Merge</title>
+<style>
+:root{--cream:#FFF7EE;--paper:#FFFFFF;--ink:#2B2437;--mute:#7A7290;--line:#EADFD2;--pink:#FF9EBF;--pink-2:#FFD3E3;--mint:#A8EDD6;--butter:#FFE58A;--butter-2:#FFF4C9;--red:#FF7B8F;color-scheme:light;box-sizing:border-box}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--cream);color:var(--ink);font-family:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;display:flex;justify-content:center;overflow:hidden}
+main{width:100%;max-width:340px;height:100%;padding:6px 8px;display:flex;flex-direction:column;min-height:0;box-sizing:border-box}
+.bar{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;font-size:12px}
+.stat{background:var(--paper);border:2px solid var(--ink);border-radius:12px;padding:3px 2px;text-align:center;font-weight:900}
+.stat small{display:block;font-weight:700;color:var(--mute);font-size:9px}
+.card{background:var(--paper);border:2px solid var(--ink);border-radius:14px;padding:5px 9px;margin:6px 0;font-size:12px;box-shadow:2px 2px 0 var(--ink)}
+.story b{display:block;font-weight:900}.story p{margin:2px 0;font-size:11px}.story small{font-size:10px;color:var(--mute)}
+.prog{height:6px;background:var(--butter-2);border:1px solid var(--ink);border-radius:6px;overflow:hidden}.prog i{display:block;height:100%;background:var(--pink)}
+.orders{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin:4px 0}
+.ord{background:var(--paper);border:2px solid var(--line);border-radius:12px;padding:3px;text-align:center;font-size:10px;line-height:1.25;font-weight:700}
+.ord .w{font-size:20px}.ord button{width:100%;margin-top:2px;padding:2px;font-size:11px}
+button{font:inherit;cursor:pointer;border:2px solid var(--ink);border-radius:10px;padding:5px 8px;font-size:12px;background:var(--mint);color:var(--ink);font-weight:900;box-shadow:0 2px 0 var(--ink)}
+button:disabled{opacity:.4;cursor:not-allowed;box-shadow:none}
+button.alt{background:var(--pink);color:var(--ink)}
+button.ghost{background:var(--paper);color:var(--ink);border-color:var(--line);box-shadow:none}
+button:focus-visible{outline:3px solid var(--pink);outline-offset:2px}
+.board{flex:1 1 auto;min-height:120px;display:grid;grid-template-columns:repeat(7,1fr);grid-template-rows:repeat(6,1fr);gap:3px;margin:4px 0}
+.cell{background:var(--butter-2);border:2px solid var(--line);border-radius:9px;min-height:0;font-size:clamp(14px,4.2vw,22px);display:flex;align-items:center;justify-content:center;padding:0;color:inherit;box-shadow:none}
+.cell.gen{background:var(--mint);border-color:var(--ink);box-shadow:0 2px 0 var(--ink)}
+.cell.sel{border-color:var(--ink);background:var(--pink-2);transform:scale(1.05)}
+.cell.pop{animation:pop .25s}
+@keyframes pop{50%{transform:scale(1.22)}}
+@media (prefers-reduced-motion:reduce){.cell.pop{animation:none}}
+.row{display:flex;gap:4px;flex-wrap:wrap}.row>button{flex:1}
+label{display:flex;align-items:center;gap:8px;margin:8px 0}
+#toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--cream);padding:6px 12px;border-radius:999px;opacity:0;transition:opacity .2s;pointer-events:none;font-size:13px;font-weight:800}
+#toast.on{opacity:1}
+.hint{color:var(--mute);font-size:10px;margin:2px 0;font-weight:700}
+@media (max-height:600px){.hint{display:none}}
+</style>
+</head>
+<body>
+<main>
+<div class="bar" id="bar"></div>
+<div class="card story" id="story"></div>
+<div class="orders" id="orders"></div>
+<div class="board" id="board"></div>
+<div class="row">
+<button id="buyE" class="ghost">+20 energy (30 coins)</button>
+<button id="buyC" class="ghost">+150 coins (5 gems)</button>
+</div>
+<p class="hint">Tap a basket or oven to make items (1 energy). Tap two matching items to merge. Serve guests for coins and stars; stars unlock story chapters.</p>
+</main>
+<div id="toast" role="status"></div>
+<script>
+const CH={o:['🍋','🍊','🥤','🍹','🍸'],b:['🌾','🥖','🥐','🍰','🎂']};
+const GEN={o:'🧺',b:'🍞'};
+const NAMES=['Marina','Theo','Pearl','Gus','Ines','Rafa','Dot','Nell'];
+const STORY=[
+[0,'Arrival at the dock','You inherit a tiny seaside stall. The harbor is quiet, but people are already whispering about you.'],
+[5,'The café opens','Guests line up for lemonade. Someone says the old owner left in a hurry.'],
+[15,'Gossip on the terrace','A regular hints that the lighthouse keeper knows why the café was closed.'],
+[30,'The lighthouse light','You climb the stairs and find the ledger. The harbor finally has its answer.']];
+const MAXE=100,KEY='harborMerge2clean',N=42;
+const fresh=()=>{const b=Array(N).fill(null);b[0]='go';b[1]='gb';return{coins:100,gems:10,energy:60,stars:0,board:b,unl:{coins:false,gems:false,energy:false,stars:false},orders:[],tick:0}};
+let S=fresh(),sel=-1;
+try{const r=localStorage.getItem(KEY);if(r){const d=JSON.parse(r);S=Object.assign(fresh(),d);S.unl=Object.assign(fresh().unl,d.unl)}}catch(e){}
+const $=id=>document.getElementById(id);
+const inChat=window.parent!==window;
+function report(){if(!inChat)return;parent.postMessage({type:'js:state',state:S},'*');parent.postMessage({type:'js:score',game:'harbor',stars:S.stars|0,coins:S.earned|0},'*')}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}report()};
+function toast(t){const e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(toast.h);toast.h=setTimeout(()=>e.classList.remove('on'),1500)}
+const spend=(k,n)=>{if(S.unl[k])return true;if(S[k]<n)return false;S[k]-=n;return true};
+const gain=(k,n)=>{if(!S.unl[k])S[k]+=n;if(k==='coins')S.earned=(S.earned||0)+n};
+function mk(){const c=Math.random()<.5?'o':'b',t=2+Math.floor(Math.random()*4);return{c,t,coins:t*20,stars:t>=4?2:1,name:NAMES[Math.floor(Math.random()*NAMES.length)]}}
+while(S.orders.length<3)S.orders.push(mk());
+const lab=v=>v?(v[0]==='g'?GEN[v[1]]:CH[v[0]][+v[1]-1]):'';
+function chapter(){let i=0;STORY.forEach((s,j)=>{if(S.stars>=s[0])i=j});return i}
+function render(){
+ const nm=[['coins','🪙','Coins'],['gems','💎','Gems'],['energy','⚡','Energy'],['stars','⭐','Stars']];
+ $('bar').innerHTML=nm.map(([k,i,n])=>`<div class="stat">${i} ${S.unl[k]?'∞':S[k]}<small>${n}</small></div>`).join('');
+ const ci=chapter(),nx=STORY[ci+1],st=S.unl.stars?'∞':S.stars;
+ $('story').innerHTML=`<b>Chapter ${ci+1}: ${STORY[ci][1]}</b><p>${STORY[ci][2]}</p>`+(nx?`<div class="prog"><i style="width:${Math.min(100,Math.round((S.stars-STORY[ci][0])/(nx[0]-STORY[ci][0])*100))}%"></i></div><small>${st} / ${nx[0]} stars for the next chapter</small>`:'<small>Story complete</small>');
+ $('board').innerHTML=S.board.map((v,i)=>`<button class="cell${v&&v[0]==='g'?' gen':''}${i===sel?' sel':''}" data-i="${i}" aria-label="${v?lab(v):'empty'}">${lab(v)}</button>`).join('');
+ $('orders').innerHTML=S.orders.map((o,i)=>{const has=S.board.includes(o.c+o.t);return`<div class="ord"><div class="w">${CH[o.c][o.t-1]}</div>${o.name}<br>🪙${o.coins} ⭐${o.stars}<button data-s="${i}" ${has?'':'disabled'}>Serve</button></div>`}).join('');
+}
+$('orders').onclick=e=>{const b=e.target.closest('[data-s]');if(!b)return;const i=+b.dataset.s,o=S.orders[i],p=S.board.indexOf(o.c+o.t);if(p<0)return;
+ const before=chapter();S.board[p]=null;gain('coins',o.coins);gain('stars',o.stars);S.orders[i]=mk();toast(o.name+' paid '+o.coins+' coins');
+ if(chapter()>before)toast('New chapter unlocked!');save();render()};
+$('board').onclick=e=>{
+ const b=e.target.closest('.cell');if(!b)return;const i=+b.dataset.i,v=S.board[i];
+ if(v&&v[0]==='g'){
+  const empty=S.board.map((x,j)=>x?-1:j).filter(j=>j>=0);
+  if(!empty.length)return toast('Board is full. Merge or serve first.');
+  if(!spend('energy',1))return toast('Out of energy. Wait or buy more.');
+  const j=empty[Math.floor(Math.random()*empty.length)];S.board[j]=v[1]+'1';save();render();return}
+ if(sel<0){if(v)sel=i;render();return}
+ if(sel===i){sel=-1;render();return}
+ const a=S.board[sel];
+ if(a&&v&&a===v&&v[0]!=='g'&&+v[1]<5){const t=+v[1]+1;S.board[i]=v[0]+t;S.board[sel]=null;gain('coins',t*5);if(t===5)gain('gems',1);sel=-1;save();render();document.querySelector(`[data-i="${i}"]`).classList.add('pop');return}
+ if(!v){S.board[i]=a;S.board[sel]=null;sel=-1}else sel=i;
+ save();render()};
+$('buyE').onclick=()=>{if(!spend('coins',30))return toast('Not enough coins');gain('energy',20);save();render()};
+$('buyC').onclick=()=>{if(!spend('gems',5))return toast('Not enough gems');gain('coins',150);save();render()};
+setInterval(()=>{if(S.unl.energy||S.energy>=MAXE)return;if(++S.tick>=30){S.tick=0;S.energy++;save();render()}},1000);
+render();
+addEventListener('message',e=>{
+ if(e.source!==parent)return;const d=e.data;
+ if(!d||d.type!=='js:load'||!d.state||typeof d.state!=='object')return;
+ try{const f=fresh();S=Object.assign(f,d.state);S.unl=f.unl;
+  if(!Array.isArray(S.board)||S.board.length!==N)S=fresh();
+  if(!Array.isArray(S.orders))S.orders=[];
+  while(S.orders.length<3)S.orders.push(mk());
+  sel=-1;render();report()}catch(_){S=fresh();while(S.orders.length<3)S.orders.push(mk());render()}
+});
+if(inChat){parent.postMessage({type:'js:ready'},'*');report()}
+</script>
+</body>
+</html>

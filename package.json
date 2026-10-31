@@ -1,0 +1,16 @@
+{
+  "name": "jan-star",
+  "version": "3.0.0",
+  "private": true,
+  "description": "JAN STAR (JS) - temporary, accountless, privacy-focused chat, calls and games. Runs 100% on Cloudflare's free plan (Workers + Durable Objects).",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "test": "node test/run.js"
+  },
+  "engines": { "node": ">=20" },
+  "devDependencies": {
+    "jsdom": "^26.1.0",
+    "wrangler": "^4.0.0"
+  }
+}

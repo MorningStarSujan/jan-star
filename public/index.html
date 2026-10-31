@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FFF7EE">
+<meta name="referrer" content="no-referrer">
+<title>JAN STAR</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<svg class="sprite" width="0" height="0" aria-hidden="true">
+  <defs>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 2l2.9 6.6 7.1.7-5.4 4.7 1.6 7L12 17.3 5.8 21l1.6-7L2 9.3l7.1-.7z" fill="currentColor"/></symbol>
+    <symbol id="i-send" viewBox="0 0 24 24"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></symbol>
+    <symbol id="i-clip" viewBox="0 0 24 24"><path d="m21.4 11-9.2 9.2a6 6 0 0 1-8.5-8.5l9.2-9.2a4 4 0 0 1 5.7 5.7l-9.2 9.2a2 2 0 0 1-2.8-2.8l8.5-8.5"/></symbol>
+    <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4"/></symbol>
+    <symbol id="i-mic-off" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4M3 3l18 18"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></symbol>
+    <symbol id="i-video" viewBox="0 0 24 24"><rect x="2" y="6" width="13" height="12" rx="2"/><path d="m22 8-7 4 7 4z"/></symbol>
+    <symbol id="i-video-off" viewBox="0 0 24 24"><rect x="2" y="6" width="13" height="12" rx="2"/><path d="m22 8-7 4 7 4zM3 3l18 18"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m0 0-4-4m4 4 4-4M4 21h16"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></symbol>
+    <symbol id="i-gamepad" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="11" rx="5"/><path d="M7 10.5v4M5 12.5h4M16 11.5h.01M18.5 13.5h.01"/></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4v16l13-8z"/></symbol>
+  </defs>
+</svg>
+
+<!-- LANDING -->
+<main id="landing" class="screen">
+  <div class="landing-card">
+    <div class="brand"><svg class="star"><use href="#i-star"/></svg><span>JAN STAR</span></div>
+    <h1>Private chats that vanish.</h1>
+    <p class="lede">Host a room, share the key, talk by text, voice or video. No account. When the host stops, everything is deleted.</p>
+
+    <div class="tabs" role="tablist">
+      <button role="tab" id="tabHost" aria-selected="true" data-tab="host">Host a chat</button>
+      <button role="tab" id="tabJoin" aria-selected="false" data-tab="join">Join a chat</button>
+    </div>
+
+    <form id="hostForm" class="form" autocomplete="off">
+      <label>Your display name<input name="name" maxlength="32" required placeholder="e.g. Asha"></label>
+      <label>Chat name<input name="chat" maxlength="48" required placeholder="e.g. Weekend plans"></label>
+      <label class="check"><input type="checkbox" name="terms" required><span>I agree to the <button type="button" class="linkbtn" data-open="terms">Terms &amp; Conditions</button></span></label>
+      <p class="err" role="alert" hidden></p>
+      <button class="primary" type="submit">Create chat</button>
+    </form>
+
+    <form id="joinForm" class="form" autocomplete="off" hidden>
+      <label>Your display name<input name="name" maxlength="32" required placeholder="e.g. Ravi"></label>
+      <label>Access key<input name="key" class="keyinput" required spellcheck="false" autocapitalize="characters" placeholder="XXXX-XXXX-XXXX-XXXX"></label>
+      <label class="check"><input type="checkbox" name="terms" required><span>I agree to the <button type="button" class="linkbtn" data-open="terms">Terms &amp; Conditions</button></span></label>
+      <p class="err" role="alert" hidden></p>
+      <button class="primary" type="submit">Join chat</button>
+    </form>
+
+    <p id="notice" class="notice" hidden></p>
+    <p class="fine">No sign-up, email or phone number. Chats, messages and files are deleted when the chat ends.</p>
+    <p class="fine links"><button type="button" class="linkbtn" data-open="terms">Terms &amp; Conditions</button> · <button type="button" class="linkbtn" id="cookieSettings">Cookie settings</button></p>
+  </div>
+</main>
+
+<!-- CHAT -->
+<div id="chat" class="app" hidden>
+  <div id="backdrop" class="backdrop"></div>
+  <aside id="side">
+    <div class="side-head">
+      <div class="brand small"><svg class="star"><use href="#i-star"/></svg><span>JAN STAR</span></div>
+      <button class="icon only-mobile" id="sideClose" aria-label="Close panel"><svg class="ic"><use href="#i-x"/></svg></button>
+    </div>
+    <section class="info">
+      <h2 id="roomName"></h2>
+      <p class="label">Access key</p>
+      <div class="keybox"><code id="keyText"></code><button class="icon" id="copyKey" aria-label="Copy access key"><svg class="ic"><use href="#i-copy"/></svg></button></div>
+      <div class="row">
+        <button class="ghost" id="copyLink">Copy invite link</button>
+        <button class="ghost" id="shareLink" hidden>Share</button>
+      </div>
+    </section>
+    <section class="people">
+      <h3>In this chat <span id="count"></span></h3>
+      <ul id="people"></ul>
+    </section>
+    <div class="side-foot">
+      <button class="outline" id="leaveBtn">Leave chat</button>
+      <button class="danger" id="stopBtn" hidden>Stop hosting</button>
+    </div>
+  </aside>
+
+  <section id="pane">
+    <header class="top">
+      <button class="icon only-mobile" id="menuBtn" aria-label="Open chat info"><svg class="ic"><use href="#i-menu"/></svg></button>
+      <div class="title"><strong id="paneTitle"></strong><small id="paneSub"></small></div>
+      <div class="actions">
+        <button class="gamebtn" id="gamesBtn" aria-label="Play games"><svg class="ic"><use href="#i-gamepad"/></svg><span>Play games</span></button>
+        <button class="icon" id="voiceCallBtn" aria-label="Start voice call"><svg class="ic"><use href="#i-phone"/></svg></button>
+        <button class="icon" id="videoCallBtn" aria-label="Start video call"><svg class="ic"><use href="#i-video"/></svg></button>
+      </div>
+    </header>
+    <div id="conn" class="conn" hidden>Reconnecting…</div>
+    <div id="callBanner" class="callbanner" hidden>
+      <span id="callBannerText"></span>
+      <button class="ghost" id="joinVoice">Join voice</button>
+      <button class="ghost" id="joinVideo">Join video</button>
+    </div>
+    <div id="messages" role="log" aria-live="polite"></div>
+    <div id="uploads"></div>
+    <div id="recBar" class="recbar" hidden>
+      <span class="dot"></span><span id="recTime">0:00</span>
+      <button class="ghost" id="recCancel">Cancel</button>
+      <button class="primary" id="recSend">Send</button>
+    </div>
+    <form id="composer">
+      <button class="icon" type="button" id="attachBtn" aria-label="Attach files"><svg class="ic"><use href="#i-clip"/></svg></button>
+      <input type="file" id="fileInput" multiple hidden>
+      <textarea id="text" rows="1" maxlength="4000" placeholder="Write a message" aria-label="Message"></textarea>
+      <button class="icon" type="button" id="micBtn" aria-label="Record voice message"><svg class="ic"><use href="#i-mic"/></svg></button>
+      <button class="send" type="submit" aria-label="Send message"><svg class="ic"><use href="#i-send"/></svg></button>
+    </form>
+  </section>
+</div>
+
+<!-- CALL -->
+<div id="call" class="call" hidden>
+  <div id="grid" class="grid"></div>
+  <div class="callbar">
+    <button class="round" id="muteBtn" aria-label="Mute microphone"><svg class="ic"><use href="#i-mic"/></svg></button>
+    <button class="round" id="camBtn" aria-label="Turn camera off"><svg class="ic"><use href="#i-video"/></svg></button>
+    <button class="round hang" id="hangBtn" aria-label="Leave call"><svg class="ic"><use href="#i-phone"/></svg></button>
+  </div>
+</div>
+
+<!-- GAMES -->
+<div id="games" class="games" hidden>
+  <header class="gtop">
+    <button class="icon" id="gBack" aria-label="Back to games" hidden><svg class="ic"><use href="#i-back"/></svg></button>
+    <strong id="gTitle">Play games</strong>
+    <button class="icon" id="gClose" aria-label="Close games"><svg class="ic"><use href="#i-x"/></svg></button>
+  </header>
+  <div id="gList" class="glist"></div>
+  <div id="gPlay" class="gplay" hidden>
+    <iframe id="gFrame" title="Game" sandbox="allow-scripts"></iframe>
+    <aside class="gboard">
+      <h3>Live leaderboard</h3>
+      <ol id="lbList"></ol>
+      <p class="fine">Everyone in this chat. Scores are deleted when the host closes the chat.</p>
+      <label class="check small"><input type="checkbox" id="pubToggle" checked><span>Show my score on the public leaderboard</span></label>
+      <button type="button" class="ghost wide" id="openPub">🌍 Open public leaderboard</button>
+    </aside>
+  </div>
+</div>
+
+<!-- PUBLIC LEADERBOARD (anyone, no chat needed) -->
+<div id="pub" class="modal" hidden>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="pubTitle">
+    <header class="mhead"><strong id="pubTitle">🏆 Live leaderboard · Harbor Merge</strong><button class="icon" type="button" data-close="pub" aria-label="Close"><svg class="ic"><use href="#i-x"/></svg></button></header>
+    <p id="pubConn" class="conn" hidden>Reconnecting…</p>
+    <ol id="pubList" class="pubList" aria-live="polite"></ol>
+    <p class="fine">Open to everyone, no account needed. Only display names and scores are shown. A score disappears when its player leaves or the chat ends.</p>
+  </div>
+</div>
+
+<!-- TERMS & CONDITIONS -->
+<div id="terms" class="modal" hidden>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="termsTitle">
+    <header class="mhead"><strong id="termsTitle">Terms &amp; Conditions</strong><button class="icon" type="button" data-close="terms" aria-label="Close"><svg class="ic"><use href="#i-x"/></svg></button></header>
+    <div class="legal">
+      <p class="fine">Last updated: October 27, 2026</p>
+      <h3>1. What JAN STAR is</h3>
+      <p>JAN STAR is a free, playful app for temporary, account-free chats, calls and games. By hosting or joining a chat you agree to these terms. If you do not agree, please do not use it.</p>
+      <h3>2. Who can use it</h3>
+      <p>You must be at least 13 years old, or have a parent or guardian's permission. Be kind: JAN STAR is for everyone.</p>
+      <h3>3. Your content and behaviour</h3>
+      <p>You are responsible for what you send. Do not share anything illegal, abusive, threatening, hateful, sexual involving minors, or private information about other people. Do not harass anyone, spread malware, or try to break, overload or cheat the service. Keep your access key private. We may block access to protect the service or other people.</p>
+      <h3>4. Temporary by design</h3>
+      <p>Messages, files, calls and scores are kept only while a chat is active. Everything is deleted when the host stops hosting, and a chat also ends on its own after a few hours. Deleted chats cannot be recovered. Other people in a chat can still copy or screenshot what you share, so only share what you are comfortable with.</p>
+      <h3>5. Artwork, stickers and characters</h3>
+      <p>The stickers, illustrations and decorations you see in JAN STAR are for fun and atmosphere only. Some of them show characters and artwork that belong to other people or companies, such as Hello Kitty, Spider-Man, Miffy, and anime characters. Those characters, names and images remain the property of their owners. JAN STAR is not made by, affiliated with, or endorsed by any of them. You may not copy, sell or reuse the artwork from this app, and you may not use it to imply that you represent its owners. If you own rights to artwork in JAN STAR and want it removed, please contact the owner of this app and it will be removed.</p>
+      <h3>6. Games and the public leaderboard</h3>
+      <p>Harbor Merge scores are shown on a <strong>public leaderboard that anyone can open</strong> from inside a chat. It shows only your display name, stars and coins. You can switch this off in the game screen, and your entry is removed when you leave or the chat ends. Choose a display name that does not reveal private information. Scores are reported by players' browsers and are for fun, not competition.</p>
+      <h3>7. Cookies</h3>
+      <p>With your permission we store up to three small cookies on this device for 12 months: <code>js_consent</code> (your cookie choice), <code>js_name</code> (the display name you last used, so you do not retype it) and <code>js_terms</code> (that you accepted these terms). They are never used for tracking or advertising. If you say no, only your choice is stored. You can delete them at any time below or in your browser settings.</p>
+      <p><button type="button" class="ghost" id="forgetMe">Forget my saved name</button></p>
+      <h3>8. No warranty</h3>
+      <p>JAN STAR is provided "as is" and "as available", without promises that it will be uninterrupted, secure or error-free. Calls and uploads depend on your network and device. To the extent the law allows, we are not liable for losses from your use of the service or from content shared by other users.</p>
+      <h3>9. Changes</h3>
+      <p>We may update these terms. When they change, you will be asked to accept them again. Continuing to use JAN STAR after an update means you accept the new terms.</p>
+    </div>
+    <div class="mfoot"><button type="button" class="primary" data-close="terms">Close</button></div>
+  </div>
+</div>
+
+<!-- COOKIE NOTICE -->
+<div id="cookies" class="cookiebar" role="region" aria-label="Cookie notice" hidden>
+  <p>Can we save your <b>display name</b> and your <b>acceptance of the terms</b> in a small cookie on this device, so you do not have to type them again? No tracking, no ads. <button type="button" class="linkbtn" data-open="terms">Details</button></p>
+  <div class="cookiebtns"><button type="button" class="ghost" id="cookieNo">No thanks</button><button type="button" class="primary" id="cookieYes">Accept</button></div>
+</div>
+
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+<script src="net.js"></script>
+<script src="stickers.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
